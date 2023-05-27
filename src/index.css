@@ -80,3 +80,7 @@ main {
 .roll-dice:active {
   box-shadow: inset 5px 5px 10px -3px rgba(0, 0, 0, 0.7);
 }
+
+.roll-count {
+  font-size: 0.9rem;
+}

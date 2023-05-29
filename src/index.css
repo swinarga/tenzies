@@ -86,12 +86,17 @@ main {
 }
 
 .stats {
-  height: 20vh;
   max-width: 264px;
   max-height: 400px;
   background-color: #f8f8e9;
   border-radius: 6px;
     /* overflow-x: scroll; */
+}
+
+@media (max-width: 992px) {
+  .stats {
+    height: 20vh;
+  }
 }
 
 .reset-btn {

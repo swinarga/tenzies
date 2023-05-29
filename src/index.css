@@ -4,7 +4,7 @@
 
 body {
   margin: 0;
-  background-color: #0B2434;
+  background-color: #1d3557;
   padding: 20px;
   font-family: 'Karla', sans-serif;
   color: #0B2434;
@@ -16,19 +16,15 @@ body {
 }
 
 main {
-  background-color: #F5F5F5;
-  height: 400px;
+  background-color: #f8f8e9;
+  /* height: 70vh; */
   max-width: 800px;
   border-radius: 5px;
   padding: 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  align-items: center;
 }
 
 .title {
-  font-size: 40px;
+  /* font-size: 40px; */
   margin: 0;
 }
 
@@ -47,8 +43,8 @@ main {
 }
 
 .die-face {
-  height: 50px;
-  width: 50px;
+  min-height: 50px;
+  min-width: 50px;
   box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.15);
   border-radius: 10px;
   display: flex;
@@ -66,7 +62,7 @@ main {
   width: 150px;
   border: none;
   border-radius: 6px;
-  background-color: #5035FF;
+  background-color: #1d3557;
   color: white;
   font-size: 1.2rem;
   font-family: 'Karla', sans-serif;
@@ -82,5 +78,26 @@ main {
 }
 
 .roll-count {
-  font-size: 0.9rem;
+  font-size: 1rem;
+}
+
+.timer-text {
+  font-size: 1rem;
+}
+
+.stats {
+  height: 20vh;
+  max-width: 264px;
+  max-height: 400px;
+  background-color: #f8f8e9;
+  border-radius: 6px;
+    /* overflow-x: scroll; */
+}
+
+.reset-btn {
+  background-color: #f1faee;
+  cursor: pointer;
+  border: none;
+  border-radius: 6px;
+  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.15);
 }

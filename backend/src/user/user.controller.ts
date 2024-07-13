@@ -73,14 +73,14 @@ class UserController {
 		// @ts-ignore
 		const { id } = req.params;
 
-		// TODO: handle delete user
-		return reply.status(200).send({
-			message: "test",
-		});
-
 		const user = await this.userDataSource.deleteUser(id);
 
-		return reply.status(204);
+		if (!user) reply.status(404).send({ message: "User not found" });
+
+		return reply.status(200).send({
+			message: "User deleted",
+			user: user,
+		});
 	};
 }
 

@@ -20,11 +20,23 @@ class UserRouter {
 		}
 	};
 
+	isAdminCheck = async (req: FastifyRequest, reply: FastifyReply) => {
+		// @ts-ignore
+		const { user } = req;
+
+		const adminUser = await this.userController.getUserByUsername(
+			user.name
+		);
+
+		if (!adminUser || !adminUser.roles.includes("admin"))
+			return reply.code(403).send({ message: "Forbidden" });
+	};
+
 	routes = async (fastify: FastifyInstance) => {
 		fastify.get(
 			"/",
 			{
-				preHandler: [fastify.authenticate],
+				preHandler: [fastify.authenticate, this.isAdminCheck],
 			},
 			this.userController.getUsers
 		);
@@ -62,6 +74,25 @@ class UserRouter {
 			this.userController.login
 		);
 		fastify.post("/logout", this.userController.logout);
+		fastify.delete(
+			"/:id",
+			{
+				schema: {
+					params: {
+						type: "object",
+						properties: {
+							id: {
+								type: "string",
+								pattern: "^[a-fA-F0-9]{24}$",
+							},
+						},
+						required: ["id"],
+					},
+				},
+				preHandler: [fastify.authenticate, this.isAdminCheck],
+			},
+			this.userController.deleteUser
+		);
 		fastify.log.info("user routes registered");
 	};
 }

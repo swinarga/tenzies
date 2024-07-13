@@ -11,21 +11,23 @@ export default class MongoDBUserDataSource implements UserDataSource {
 	constructor() {}
 
 	async createUser(user: IUser): Promise<UserDocument> {
-		console.log(user);
 		const newUser = new User({
 			...user,
+			roles: ["user"],
 		});
 		await newUser.save();
 		const userDoc: UserDocument = newUser.toObject();
 
 		return userDoc;
 	}
+
 	async getUser(filterObj: GetUserFilter): Promise<UserDocument | null> {
 		const user = await User.findOne(filterObj).select("-__v");
 		if (!user) return null;
 
 		return user.toObject();
 	}
+
 	async getUsers(): Promise<UserDocument[]> {
 		const users = await User.find().select("-__v");
 
@@ -48,6 +50,7 @@ export default class MongoDBUserDataSource implements UserDataSource {
 			return null;
 		}
 	}
+
 	async deleteUser(id: string): Promise<UserDocument | null> {
 		const user = await User.findOneAndDelete({ _id: id });
 

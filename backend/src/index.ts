@@ -5,7 +5,6 @@ import mongoose from "mongoose";
 import fjwt, { FastifyJWT } from "@fastify/jwt";
 import fCookie from "@fastify/cookie";
 import MongoDBUserDataSource from "./database/MongoDBUserDataSource";
-import UserService from "./user/user.service";
 import UserController from "./user/user.controller";
 import UserRouter from "./user/user.routes";
 
@@ -66,8 +65,7 @@ async function getMongoDS() {
 				req.user = decoded;
 			}
 		);
-		const userService = new UserService(userDataSource);
-		const userController = new UserController(userService);
+		const userController = new UserController(userDataSource);
 		const userRouter = new UserRouter(userController);
 
 		fastify.register(userRouter.routes, {

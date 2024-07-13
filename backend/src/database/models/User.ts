@@ -10,6 +10,10 @@ export const UserSchema = new Schema({
 		type: String,
 		required: true,
 	},
+	roles: {
+		type: [String],
+		required: true,
+	},
 });
 
 export default model<User>("User", UserSchema);

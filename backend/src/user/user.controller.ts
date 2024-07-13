@@ -1,12 +1,12 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import bcrypt from "bcrypt";
-import UserService from "./user.service";
+import { UserDataSource } from "../database/interfaces/UserDataSource";
 
 class UserController {
-	userService: UserService;
+	userDataSource: UserDataSource;
 
-	constructor(userService: UserService) {
-		this.userService = userService;
+	constructor(userDataSource: UserDataSource) {
+		this.userDataSource = userDataSource;
 	}
 
 	login = async (req: FastifyRequest, reply: FastifyReply) => {
@@ -39,19 +39,19 @@ class UserController {
 	};
 
 	getUsers = async (req: FastifyRequest, reply: FastifyReply) => {
-		const users = await this.userService.getUsers();
+		const users = await this.userDataSource.getUsers();
 		return users;
 	};
 
 	getUserById = async (req: FastifyRequest, reply: FastifyReply) => {
 		// @ts-ignore
-		const user = await this.userService.getUser({ _id: req.params.id });
+		const user = await this.userDataSource.getUser({ _id: req.params.id });
 		return user;
 	};
 
 	getUserByUsername = async (username: string) => {
 		// @ts-ignore
-		const user = await this.userService.getUser({ username: username });
+		const user = await this.userDataSource.getUser({ username: username });
 		return user;
 	};
 
@@ -59,7 +59,7 @@ class UserController {
 		// @ts-ignore
 		const { username, password } = req.body;
 
-		const user = await this.userService.createUser({
+		const user = await this.userDataSource.createUser({
 			username,
 			password: await bcrypt.hash(password, 10),
 		});
@@ -67,6 +67,20 @@ class UserController {
 		return reply.status(201).send({
 			user: user,
 		});
+	};
+
+	deleteUser = async (req: FastifyRequest, reply: FastifyReply) => {
+		// @ts-ignore
+		const { id } = req.params;
+
+		// TODO: handle delete user
+		return reply.status(200).send({
+			message: "test",
+		});
+
+		const user = await this.userDataSource.deleteUser(id);
+
+		return reply.status(204);
 	};
 }
 

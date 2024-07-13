@@ -23,6 +23,12 @@ declare module "@fastify/jwt" {
 export type User = {
 	username: string;
 	password: string;
+	roles: string[];
+};
+
+export type CreateUser = {
+	username: string;
+	password: string;
 };
 
 export type UserDocument = User & {

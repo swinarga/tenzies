@@ -2,6 +2,7 @@ import {
 	User as IUser,
 	UpdateUser,
 	UserDocument,
+	UserDocumentWithPassword,
 	GetUserFilter,
 } from "../utils/types";
 import User from "./models/User";
@@ -22,6 +23,15 @@ export default class MongoDBUserDataSource implements UserDataSource {
 	}
 
 	async getUser(filterObj: GetUserFilter): Promise<UserDocument | null> {
+		const user = await User.findOne(filterObj).select("-__v -password");
+		if (!user) return null;
+
+		return user.toObject();
+	}
+
+	async getUserWithPassword(
+		filterObj: GetUserFilter
+	): Promise<UserDocumentWithPassword | null> {
 		const user = await User.findOne(filterObj).select("-__v");
 		if (!user) return null;
 
@@ -29,7 +39,7 @@ export default class MongoDBUserDataSource implements UserDataSource {
 	}
 
 	async getUsers(): Promise<UserDocument[]> {
-		const users = await User.find().select("-__v");
+		const users = await User.find().select("-__v -password");
 
 		return users.map((user) => user.toObject());
 	}

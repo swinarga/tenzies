@@ -13,7 +13,7 @@ class UserController {
 		// @ts-ignore
 		const { username, password } = req.body;
 
-		const user = await this.getUserByUsername(username);
+		const user = await this.getUserWithPassword(username);
 
 		const isMatch = user && bcrypt.compare(password, user.password);
 		if (!user || !isMatch) {
@@ -43,15 +43,29 @@ class UserController {
 		return users;
 	};
 
-	getUserById = async (req: FastifyRequest, reply: FastifyReply) => {
-		// @ts-ignore
-		const user = await this.userDataSource.getUser({ _id: req.params.id });
+	getUserById = async (
+		req: FastifyRequest<{
+			Params: {
+				id: string;
+			};
+		}>,
+		reply: FastifyReply
+	) => {
+		const user = await this.userDataSource.getUser({
+			_id: req.params.id,
+		});
 		return user;
 	};
 
 	getUserByUsername = async (username: string) => {
-		// @ts-ignore
 		const user = await this.userDataSource.getUser({ username: username });
+		return user;
+	};
+
+	getUserWithPassword = async (username: string) => {
+		const user = await this.userDataSource.getUserWithPassword({
+			username: username,
+		});
 		return user;
 	};
 

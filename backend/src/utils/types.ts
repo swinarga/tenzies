@@ -31,7 +31,11 @@ export type CreateUser = {
 	password: string;
 };
 
-export type UserDocument = User & {
+export type UserDocument = Omit<User, "password"> & {
+	_id: string;
+};
+
+export type UserDocumentWithPassword = User & {
 	_id: string;
 };
 

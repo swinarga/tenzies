@@ -74,6 +74,13 @@ class UserRouter {
 			this.userController.login
 		);
 		fastify.post("/logout", this.userController.logout);
+		fastify.get(
+			"/me",
+			{
+				preHandler: [fastify.authenticate],
+			},
+			this.userController.getUserById
+		);
 		fastify.delete(
 			"/:id",
 			{

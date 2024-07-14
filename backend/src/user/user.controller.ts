@@ -30,7 +30,13 @@ class UserController {
 			httpOnly: true,
 			secure: true,
 		});
-		return { accessToken: token };
+
+		return reply.status(200).send({
+			message: "Logged in",
+			user: {
+				username: user.username,
+			},
+		});
 	};
 
 	logout = async (req: FastifyRequest, reply: FastifyReply) => {
@@ -43,16 +49,9 @@ class UserController {
 		return users;
 	};
 
-	getUserById = async (
-		req: FastifyRequest<{
-			Params: {
-				id: string;
-			};
-		}>,
-		reply: FastifyReply
-	) => {
+	getUserById = async (req: FastifyRequest, reply: FastifyReply) => {
 		const user = await this.userDataSource.getUser({
-			_id: req.params.id,
+			_id: req.user.id,
 		});
 		return user;
 	};

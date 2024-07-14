@@ -1,8 +1,8 @@
-// Import the framework and instantiate it
 import Fastify, { FastifyReply, FastifyRequest } from "fastify";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import fjwt, { FastifyJWT } from "@fastify/jwt";
+import cors from "@fastify/cors";
 import fCookie from "@fastify/cookie";
 import MongoDBUserDataSource from "./database/MongoDBUserDataSource";
 import UserController from "./user/user.controller";
@@ -27,7 +27,6 @@ async function getMongoDS() {
 			userDataSource: new MongoDBUserDataSource(),
 		};
 	} catch (err) {
-		// Logger.error(err);
 		throw err;
 	}
 }
@@ -37,6 +36,11 @@ async function getMongoDS() {
 		const { userDataSource } = await getMongoDS();
 		const fastify = Fastify({
 			logger: true,
+		});
+
+		await fastify.register(cors, {
+			origin: process.env.FRONTEND_URL,
+			credentials: true,
 		});
 
 		// jwt

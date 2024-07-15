@@ -1,4 +1,5 @@
 import "./Header.css";
+import logo from "/tenzies_logo.png";
 import { AuthData } from "../auth/AuthWrapper";
 
 export default function Header({ user }) {
@@ -7,7 +8,7 @@ export default function Header({ user }) {
 	return (
 		<div className="d-flex flex-row outpost-header align-items-center">
 			<div className="outpost-logo-container">
-				{/* <img src={tf2OutpostLogo} className="outpost-logo" alt="" /> */}
+				<img src={logo} className="outpost-logo" alt="" />
 			</div>
 			<input
 				className="me-auto flex-grow-1 border-0 search-container shadow-none"

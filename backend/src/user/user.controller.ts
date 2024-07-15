@@ -59,6 +59,7 @@ class UserController {
 		const formattedUser = {
 			username: user.username,
 			_id: user._id,
+			profileId: user.profile,
 		};
 		return formattedUser;
 	};

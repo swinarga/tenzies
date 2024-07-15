@@ -25,6 +25,7 @@ export type User = {
 	username: string;
 	password: string;
 	roles: string[];
+	profile: Profile;
 };
 
 export type CreateUser = {

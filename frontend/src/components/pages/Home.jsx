@@ -4,6 +4,7 @@ import Confetti from "react-confetti";
 import Die from "../Die";
 import Stats from "../Stats";
 import { AuthData } from "../../auth/AuthWrapper";
+import Header from "../Header";
 
 export default function Home() {
 	const [dice, setDice] = useState(allNewDice());
@@ -143,6 +144,7 @@ export default function Home() {
 		<>
 			{tenzies && <Confetti width={window.innerwidth} />}
 			<div className="d-flex flex-column" style={{ height: "100vh" }}>
+				<Header user={user} />
 				{user ? (
 					<p style={{ color: "white" }}>
 						{user && JSON.stringify(user)}
@@ -203,7 +205,7 @@ export default function Home() {
 				<div
 					className="footer text-center p-3"
 					style={{
-						backgroundColor: `rgba(0, 0, 0, 0.2)`,
+						backgroundColor: `#172b46`,
 						color: "white",
 					}}
 				>

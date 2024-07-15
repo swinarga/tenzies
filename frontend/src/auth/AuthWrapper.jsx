@@ -51,13 +51,17 @@ export const AuthWrapper = () => {
 	};
 	const logout = async () => {
 		try {
-			await axios.post(
+			const res = await axios.post(
 				import.meta.env.VITE_BACKEND_URL + "/api/users/logout",
 				{},
 				{
 					withCredentials: true,
 				}
 			);
+			if (res.status !== 200) {
+				throw new Error("failed to logout");
+			}
+			setUser(null);
 		} catch (err) {
 			console.error(err);
 		}

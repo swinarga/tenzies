@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import {
 	User as IUser,
 	UpdateUser,
@@ -6,17 +7,29 @@ import {
 	GetUserFilter,
 } from "../utils/types";
 import User from "./models/User";
+import Profile from "./models/Profile";
 import { UserDataSource } from "./interfaces/UserDataSource";
 
 export default class MongoDBUserDataSource implements UserDataSource {
 	constructor() {}
 
 	async createUser(user: IUser): Promise<UserDocument> {
+		const userId = new mongoose.Types.ObjectId();
+		const profile = new Profile({
+			_id: new mongoose.Types.ObjectId(),
+			gameSessions: [],
+			userId: userId,
+			username: user.username,
+			isPrivate: false,
+		});
 		const newUser = new User({
+			_id: userId,
 			...user,
 			roles: ["user"],
+			profile: profile,
 		});
 		await newUser.save();
+		await profile.save();
 		const userDoc: UserDocument = newUser.toObject();
 
 		return userDoc;

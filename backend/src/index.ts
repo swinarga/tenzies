@@ -7,6 +7,9 @@ import fCookie from "@fastify/cookie";
 import MongoDBUserDataSource from "./database/MongoDBUserDataSource";
 import UserController from "./user/user.controller";
 import UserRouter from "./user/user.routes";
+import MongoDBProfileDataSource from "./database/MongoDBProfileDataSource";
+import ProfileController from "./profile/profile.controller";
+import ProfileRouter from "./profile/profile.routes";
 
 dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
 
@@ -25,6 +28,7 @@ async function getMongoDS() {
 
 		return {
 			userDataSource: new MongoDBUserDataSource(),
+			profileDataSource: new MongoDBProfileDataSource(),
 		};
 	} catch (err) {
 		throw err;
@@ -33,7 +37,7 @@ async function getMongoDS() {
 
 (async () => {
 	try {
-		const { userDataSource } = await getMongoDS();
+		const { userDataSource, profileDataSource } = await getMongoDS();
 		const fastify = Fastify({
 			logger: true,
 		});
@@ -72,8 +76,14 @@ async function getMongoDS() {
 		const userController = new UserController(userDataSource);
 		const userRouter = new UserRouter(userController);
 
+		const profileController = new ProfileController(profileDataSource);
+		const profileRouter = new ProfileRouter(profileController);
+
 		fastify.register(userRouter.routes, {
 			prefix: "/api/users",
+		});
+		fastify.register(profileRouter.routes, {
+			prefix: "/api/profiles",
 		});
 
 		// Declare a route

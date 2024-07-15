@@ -53,7 +53,14 @@ class UserController {
 		const user = await this.userDataSource.getUser({
 			_id: req.user.id,
 		});
-		return user;
+
+		if (!user) return reply.status(404).send({ message: "User not found" });
+
+		const formattedUser = {
+			username: user.username,
+			_id: user._id,
+		};
+		return formattedUser;
 	};
 
 	getUserByUsername = async (username: string) => {

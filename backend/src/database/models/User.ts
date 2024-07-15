@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import { Schema, model, Types } from "mongoose";
 import { User } from "../../utils/types";
 
 export const UserSchema = new Schema({
@@ -12,6 +12,11 @@ export const UserSchema = new Schema({
 	},
 	roles: {
 		type: [String],
+		required: true,
+	},
+	profile: {
+		type: Types.ObjectId,
+		ref: "Profile",
 		required: true,
 	},
 });

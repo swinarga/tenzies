@@ -12,6 +12,7 @@ declare module "fastify" {
 type UserPayload = {
 	id: string;
 	name: string;
+	profileId: string;
 };
 
 declare module "@fastify/jwt" {
@@ -47,4 +48,36 @@ export type GetUserFilter = {
 export type UpdateUser = {
 	username?: string;
 	password?: string;
+};
+
+export type Profile = {
+	gameSessions: GameSession[];
+	userId: string;
+	username: string;
+	isPrivate: boolean;
+};
+
+export type ProfileDocument = Profile & {
+	_id: string;
+};
+
+export type UpdateProfile = {
+	gameSessions?: GameSession[];
+	isPrivate?: boolean;
+};
+
+export type GameSession = {
+	rolls: number;
+	time: number;
+	datePlayed: Date;
+};
+
+export type GameSessionDocument = GameSession & {
+	_id: string;
+};
+
+export type GetGameSessionFilter = {
+	rolls?: number;
+	time?: number;
+	datePlayed?: Date;
 };

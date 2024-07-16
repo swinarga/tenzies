@@ -21,19 +21,24 @@ class ProfileRouter {
 			return reply.code(404).send({ message: "Profile not found" });
 		}
 
-		console.log("profile user ID: " + profile.userId);
-		console.log("cookie user ID: " + req.user.id);
-		console.log(
-			"profile user ID type: " + typeof profile.userId.toString()
-		);
-		console.log("cookie user ID type: " + typeof req.user.id);
+		// read only if user is not the owner of the profile and profile is not private
+		if (req.method === "GET" && !profile.isPrivate) return;
+
+		// https://stackoverflow.com/a/6937030
+		if (!req.user)
+			return reply.code(401).send({ message: "Not authenticated!" });
 		if (profile.userId.toString() !== req.user.id) {
-			return reply.code(401).send({ message: "Unauthorized" });
+			return reply.code(403).send({ message: "Unauthorized" });
 		}
 	};
 
 	routes = async (fastify: FastifyInstance) => {
 		fastify.get("/", this.profileController.getProfiles);
+		fastify.get(
+			"/:id",
+			{ preHandler: [this.checkIsUserAuthorized] },
+			this.profileController.getProfileById
+		);
 		fastify.put(
 			"/:id",
 			{

@@ -1,5 +1,6 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
 import ProfileController from "./profile.controller";
+import { checkValidIdMiddleware } from "../middleware/middleware";
 
 class ProfileRouter {
 	profileController: ProfileController;
@@ -36,13 +37,22 @@ class ProfileRouter {
 		fastify.get("/", this.profileController.getProfiles);
 		fastify.get(
 			"/:id",
-			{ preHandler: [this.checkIsUserAuthorized] },
+			{
+				preHandler: [
+					checkValidIdMiddleware,
+					this.checkIsUserAuthorized,
+				],
+			},
 			this.profileController.getProfileById
 		);
 		fastify.put(
 			"/:id",
 			{
-				preHandler: [fastify.authenticate, this.checkIsUserAuthorized],
+				preHandler: [
+					checkValidIdMiddleware,
+					fastify.authenticate,
+					this.checkIsUserAuthorized,
+				],
 			},
 			this.profileController.updateProfile
 		);

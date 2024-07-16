@@ -1,5 +1,6 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
 import UserController from "./user.controller";
+import { checkValidIdMiddleware } from "../middleware/middleware";
 
 class UserRouter {
 	userController: UserController;
@@ -21,7 +22,6 @@ class UserRouter {
 	};
 
 	isAdminCheck = async (req: FastifyRequest, reply: FastifyReply) => {
-		// @ts-ignore
 		const { user } = req;
 
 		const adminUser = await this.userController.getUserByUsername(
@@ -96,7 +96,11 @@ class UserRouter {
 						required: ["id"],
 					},
 				},
-				preHandler: [fastify.authenticate, this.isAdminCheck],
+				preHandler: [
+					checkValidIdMiddleware,
+					fastify.authenticate,
+					this.isAdminCheck,
+				],
 			},
 			this.userController.deleteUser
 		);

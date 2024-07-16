@@ -42,7 +42,7 @@ export const AuthWrapper = () => {
 			if (res.status !== 200) {
 				throw new Error("not authenticated");
 			}
-			setUser(res.data.user);
+			setUser(res.data);
 			return true;
 		} catch (err) {
 			console.error(err);

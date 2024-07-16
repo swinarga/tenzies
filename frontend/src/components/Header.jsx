@@ -1,6 +1,7 @@
 import "./Header.css";
 import logo from "/tenzies_logo.png";
 import { AuthData } from "../auth/AuthWrapper";
+import { Link } from "react-router-dom";
 
 export default function Header({ user }) {
 	const { logout } = AuthData();
@@ -31,6 +32,9 @@ export default function Header({ user }) {
 						<div className="p-2">
 							<button onClick={logout}>Logout</button>
 						</div>
+						<Link to={`/profiles/${user.profileId}`}>
+							<span>Profile</span>
+						</Link>
 					</>
 				) : (
 					<a href={"/login"}>

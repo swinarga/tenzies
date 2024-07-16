@@ -7,10 +7,9 @@ export const nav = [
 	{ path: "/", name: "Home", element: <Home /> },
 	{ path: "/login", name: "Login", element: <Login /> },
 	{
-		path: "/profiles/:profileId",
+		path: "/profiles/:id",
 		name: "Profile",
 		element: <Profile />,
-		isPrivate: true,
 	},
 	{
 		path: "*",

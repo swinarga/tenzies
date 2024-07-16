@@ -1,10 +1,59 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import ReactLoading from "react-loading";
 import "./Login.css";
 import { AuthData } from "../../auth/AuthWrapper";
 import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router";
+import axios from "axios";
 
-const Profile = ({ profileId }) => {
-	const { user } = AuthData();
+const Profile = () => {
+	const [profile, setProfile] = useState(null);
+	const [isProfileFound, setIsProfileFound] = useState(false);
+	const { id } = useParams();
+
+	useEffect(() => {
+		const getProfile = async () => {
+			try {
+				const res = await axios.get(
+					import.meta.env.VITE_BACKEND_URL + "/api/profiles/" + id,
+					{
+						withCredentials: true,
+					}
+				);
+				if (res.status !== 200) {
+					throw Error(res.data);
+				}
+				console.log(res);
+
+				setProfile(res.data);
+				setIsProfileFound(true);
+			} catch (err) {
+				console.error(err);
+			}
+		};
+		getProfile();
+	}, []);
+
+	const profileNotFound = (
+		<div>
+			<h1>Profile not found!</h1>
+		</div>
+	);
+
+	const profileFound = (
+		<>
+			{profile && (
+				<div>
+					<h3>{profile.username}</h3>
+					<ul>
+						{profile.gameSessions.map((session) => (
+							<li key={session._id}>{session}</li>
+						))}
+					</ul>
+				</div>
+			)}
+		</>
+	);
 
 	// return (
 	// 	<div className="container mt-5">
@@ -59,8 +108,15 @@ const Profile = ({ profileId }) => {
 	// );
 	return (
 		<>
-			<h1>PROFILE</h1>
-			<p>{user.username}</p>
+			{profile ? (
+				isProfileFound ? (
+					profileFound
+				) : (
+					profileNotFound
+				)
+			) : (
+				<ReactLoading type="spin" />
+			)}
 		</>
 	);
 };

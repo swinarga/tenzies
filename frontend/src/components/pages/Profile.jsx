@@ -46,8 +46,8 @@ const Profile = () => {
 				<div>
 					<h3>{profile.username}</h3>
 					<ul>
-						{profile.gameSessions.map((session) => (
-							<li key={session._id}>{session}</li>
+						{profile.games.map((game) => (
+							<li key={game._id}>{JSON.stringify(game)}</li>
 						))}
 					</ul>
 				</div>

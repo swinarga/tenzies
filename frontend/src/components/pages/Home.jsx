@@ -63,6 +63,7 @@ export default function Home() {
 						id: nanoid(),
 						seconds,
 						milliseconds,
+						time: seconds + milliseconds / 100,
 						rollCount,
 					},
 					...prevRecords,

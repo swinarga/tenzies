@@ -1,16 +1,18 @@
 export default function Stats(props) {
-	const recordsEl = props.records.map((record, index) => {
-		return (
-			<tr key={record.id}>
-				<th scope="row">{index + 1}</th>
-				<td>
-					{record?.seconds.toString().padStart(2, "0")}:
-					{record?.milliseconds.toString().padStart(2, "0")}
-				</td>
-				<td>{record.rollCount}</td>
-			</tr>
-		);
-	});
+	const recordsEl = props.records
+		.sort((a, b) => b.datePlayed - a.datePlayed)
+		.map((record, index) => {
+			return (
+				<tr key={record.id}>
+					<th scope="row">{index + 1}</th>
+					<td>
+						{record?.seconds.toString().padStart(2, "0")}:
+						{record?.milliseconds.toString().padStart(2, "0")}
+					</td>
+					<td>{record.rollCount}</td>
+				</tr>
+			);
+		});
 	return (
 		<div className="stats table-responsive">
 			<table className="table">

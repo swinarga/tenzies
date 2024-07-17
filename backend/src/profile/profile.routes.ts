@@ -11,7 +11,8 @@ class ProfileRouter {
 
 	checkIsUserAuthorized = async (
 		req: FastifyRequest<{
-			Params: { id: string };
+			// some routes have profileId, some have id for getting profile ID
+			Params: { id: string; profileId: string };
 		}>,
 		reply: FastifyReply
 	) => {
@@ -55,6 +56,39 @@ class ProfileRouter {
 				],
 			},
 			this.profileController.updateProfile
+		);
+		fastify.post(
+			"/:profileId/games/",
+			{
+				schema: {
+					body: {
+						type: "object",
+						properties: {
+							rolls: { type: "number" },
+							time: { type: "number" },
+							datePlayed: { type: "number" }, // time since epoch in milliseconds
+						},
+						required: ["rolls", "time", "datePlayed"],
+					},
+				},
+				preHandler: [
+					checkValidIdMiddleware,
+					fastify.authenticate,
+					this.checkIsUserAuthorized,
+				],
+			},
+			this.profileController.addGame
+		);
+		fastify.delete(
+			"/:profileId/games/:gameId",
+			{
+				preHandler: [
+					checkValidIdMiddleware,
+					fastify.authenticate,
+					this.checkIsUserAuthorized,
+				],
+			},
+			this.profileController.deleteGame
 		);
 		fastify.log.info("user routes registered");
 	};

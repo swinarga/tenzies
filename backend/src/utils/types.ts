@@ -35,6 +35,7 @@ export type CreateUser = {
 
 export type UserDocument = Omit<User, "password"> & {
 	_id: string;
+	profile: ProfileDocument;
 };
 
 export type UserDocumentWithPassword = User & {
@@ -52,7 +53,7 @@ export type UpdateUser = {
 };
 
 export type Profile = {
-	gameSessions: GameSession[];
+	games: Game[];
 	userId: string;
 	username: string;
 	isPrivate: boolean;
@@ -60,24 +61,25 @@ export type Profile = {
 
 export type ProfileDocument = Profile & {
 	_id: string;
+	games: GameDocument[];
 };
 
 export type UpdateProfile = {
-	gameSessions?: GameSession[];
+	games?: Game[];
 	isPrivate?: boolean;
 };
 
-export type GameSession = {
+export type Game = {
 	rolls: number;
 	time: number;
 	datePlayed: Date;
 };
 
-export type GameSessionDocument = GameSession & {
+export type GameDocument = Game & {
 	_id: string;
 };
 
-export type GetGameSessionFilter = {
+export type GetGameFilter = {
 	rolls?: number;
 	time?: number;
 	datePlayed?: Date;

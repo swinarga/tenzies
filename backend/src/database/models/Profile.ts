@@ -1,15 +1,15 @@
 import { Schema, model, Types } from "mongoose";
 import { Profile } from "../../utils/types";
 
-export const GameSessionSchema = new Schema({
+export const GameSchema = new Schema({
 	rolls: { type: Number, required: true },
 	time: { type: Number, required: true },
 	datePlayed: { type: Date, required: true },
 });
 
 export const ProfileSchema = new Schema({
-	gameSessions: {
-		type: [GameSessionSchema],
+	games: {
+		type: [GameSchema],
 		required: true,
 	},
 	userId: {

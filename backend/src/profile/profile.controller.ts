@@ -1,6 +1,7 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { ProfileDataSource } from "../database/interfaces/ProfileDataSource";
-import { GameSession, UpdateProfile } from "../utils/types";
+import { Game, UpdateProfile } from "../utils/types";
+import moment from "moment";
 
 class ProfileController {
 	profileDataSource: ProfileDataSource;
@@ -11,12 +12,12 @@ class ProfileController {
 
 	getProfileById = async (
 		req: FastifyRequest<{
-			Params: { id: string };
+			Params: { id: string; profileId: string };
 		}>,
 		reply: FastifyReply
 	) => {
 		const profile = await this.profileDataSource.getProfileById(
-			req.params.id
+			req.params.id ? req.params.id : req.params.profileId
 		);
 		return profile;
 	};
@@ -44,55 +45,74 @@ class ProfileController {
 		return updatedProfile;
 	};
 
-	addGameSession = async (req: FastifyRequest, reply: FastifyReply) => {
-		const gameSession = req.body as GameSession;
-
-		const newGameSession = await this.profileDataSource.addGameSession(
-			req.user.id,
-			gameSession
-		);
-
-		if (!newGameSession)
-			return reply.status(500).send({
-				message: `Could not create game session record for user ${req.user.id}`,
-			});
-
-		return reply.status(200).send(newGameSession);
-	};
-
-	getGameSessions = async (
+	addGame = async (
 		req: FastifyRequest<{
-			Params: { id: string };
+			Body: Omit<Game, "datePlayed"> & { datePlayed: number };
+			Params: {
+				profileId: string;
+			};
 		}>,
 		reply: FastifyReply
 	) => {
-		const profileId = req.params.id;
-		const gameSessions =
-			await this.profileDataSource.getGameSessions(profileId);
+		const body = req.body;
 
-		return reply.status(200).send(gameSessions);
+		if (!moment(body.datePlayed).isValid())
+			return reply.status(400).send({
+				message: "Invalid date format",
+			});
+
+		const game = {
+			...body,
+			datePlayed: moment(body.datePlayed).toDate(),
+		};
+
+		const profileId = req.params.profileId;
+
+		const newGame = await this.profileDataSource.addGame(profileId, game);
+
+		if (!newGame)
+			return reply.status(500).send({
+				message: `Could not create game session record for user profile ${req.params.profileId}`,
+			});
+
+		return reply.status(201).send(newGame);
 	};
 
-	deleteGameSession = async (
+	getGames = async (
 		req: FastifyRequest<{
-			Params: { profileId: string; gameSessionid: string };
+			Params: { profileId: string };
 		}>,
 		reply: FastifyReply
 	) => {
 		const profileId = req.params.profileId;
-		const gameSessionId = req.params.gameSessionid;
+		const games = await this.profileDataSource.getGames(profileId);
 
-		const gameSession = await this.profileDataSource.deleteGameSession(
-			profileId,
-			gameSessionId
-		);
+		if (!games) {
+			return reply.status(404).send({
+				message: `User profile ${profileId} not found`,
+			});
+		}
 
-		if (!gameSession)
+		return reply.status(200).send(games);
+	};
+
+	deleteGame = async (
+		req: FastifyRequest<{
+			Params: { profileId: string; gameId: string };
+		}>,
+		reply: FastifyReply
+	) => {
+		const profileId = req.params.profileId;
+		const gameId = req.params.gameId;
+
+		const game = await this.profileDataSource.deleteGame(profileId, gameId);
+
+		if (!game)
 			reply.status(404).send({ message: "Game session not found" });
 
 		return reply.status(200).send({
-			message: "Game sessoin deleted",
-			gameSession: gameSession,
+			message: "Game session deleted",
+			game: game,
 		});
 	};
 }

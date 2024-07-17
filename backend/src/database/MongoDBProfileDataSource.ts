@@ -1,4 +1,9 @@
-import { GameSession, ProfileDocument, UpdateProfile } from "../utils/types";
+import {
+	Game,
+	GameDocument,
+	ProfileDocument,
+	UpdateProfile,
+} from "../utils/types";
 import Profile from "./models/Profile";
 import { ProfileDataSource } from "./interfaces/ProfileDataSource";
 
@@ -30,7 +35,7 @@ export default class MongoDBProfileDataSource implements ProfileDataSource {
 			{ _id: profileId },
 			{
 				isPrivate: profile.isPrivate,
-				gameSessions: profile.gameSessions,
+				games: profile.games,
 			},
 			{ returnDocument: "after" }
 		).select("-__v");
@@ -40,14 +45,13 @@ export default class MongoDBProfileDataSource implements ProfileDataSource {
 		return updatedProfile.toObject();
 	}
 
-	// TODO: implement route to add game session
-	async addGameSession(
+	async addGame(
 		profileId: string,
-		gameSession: GameSession
+		game: Game
 	): Promise<ProfileDocument | null> {
 		const profile = await Profile.findOneAndUpdate(
 			{ _id: profileId },
-			{ $push: { gameSessions: gameSession } },
+			{ $push: { games: game } },
 			{ returnDocument: "after" }
 		).select("-__v");
 
@@ -56,28 +60,39 @@ export default class MongoDBProfileDataSource implements ProfileDataSource {
 		return profile.toObject();
 	}
 
-	// TODO: implement route to add game session
-	async getGameSessions(profileId: string): Promise<GameSession[] | null> {
+	async getGames(profileId: string): Promise<GameDocument[] | null> {
 		const profile = await Profile.findOne({ _id: profileId }).select(
 			"-__v"
 		);
 
 		if (!profile) return null;
 
-		return profile.toObject().gameSessions;
+		return profile.toObject().games as GameDocument[];
 	}
 
 	// TODO: implement route to add game session
-	async deleteGameSession(
+	async deleteGame(
 		profileId: string,
-		gameSessionId: string
-	): Promise<GameSession | null> {
+		gameId: string
+	): Promise<GameDocument | null> {
 		const profile = await Profile.findOne({ _id: profileId }).select(
 			"-__v"
 		);
 
 		if (!profile) return null;
 
-		throw new Error("Method not implemented.");
+		const games = profile.games as GameDocument[];
+		const index = games.findIndex((game) => game._id.toString() === gameId);
+
+		if (index === -1) return null;
+
+		// remove game from games array
+		const game = games.splice(index, 1);
+
+		// update profile with new games array
+		profile.games = games;
+		await profile.save();
+
+		return game[0];
 	}
 }

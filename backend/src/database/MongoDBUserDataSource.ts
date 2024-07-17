@@ -17,7 +17,7 @@ export default class MongoDBUserDataSource implements UserDataSource {
 		const userId = new mongoose.Types.ObjectId();
 		const profile = new Profile({
 			_id: new mongoose.Types.ObjectId(),
-			gameSessions: [],
+			games: [],
 			userId: userId,
 			username: user.username,
 			isPrivate: false,
@@ -30,6 +30,8 @@ export default class MongoDBUserDataSource implements UserDataSource {
 		});
 		await newUser.save();
 		await profile.save();
+
+		// TODO: dont return password
 		const userDoc: UserDocument = newUser.toObject();
 
 		return userDoc;
@@ -75,6 +77,8 @@ export default class MongoDBUserDataSource implements UserDataSource {
 	}
 
 	async deleteUser(id: string): Promise<UserDocument | null> {
+		// TODO: Delete profile as well
+
 		const user = await User.findOneAndDelete({ _id: id });
 
 		if (!user) return null;

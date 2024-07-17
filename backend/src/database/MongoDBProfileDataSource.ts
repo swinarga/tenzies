@@ -70,7 +70,6 @@ export default class MongoDBProfileDataSource implements ProfileDataSource {
 		return profile.toObject().games as GameDocument[];
 	}
 
-	// TODO: implement route to add game session
 	async deleteGame(
 		profileId: string,
 		gameId: string

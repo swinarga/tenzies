@@ -247,12 +247,18 @@ export default function Home() {
 			{tenzies && <Confetti width={window.innerwidth} />}
 			<div className="d-flex flex-column" style={{ height: "100vh" }}>
 				<Header user={user} />
-				{user ? (
-					<p style={{ color: "white" }}>
-						{user && JSON.stringify(user)}
-					</p>
-				) : (
-					<p style={{ color: "white" }}>you're not logged in</p>
+				{user && (
+					<div className="mt-5">
+						<h2
+							style={{
+								margin: 0,
+								color: "white",
+								textAlign: "center",
+							}}
+						>
+							Welcome back {user.username}!
+						</h2>
+					</div>
 				)}
 
 				<div

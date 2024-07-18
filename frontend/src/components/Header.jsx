@@ -37,9 +37,9 @@ export default function Header({ user }) {
 						</Link>
 					</>
 				) : (
-					<a href={"/login"}>
-						<span>Login</span>
-					</a>
+					<Link to={"/login"} className="me-2">
+						<button className="btn btn-primary">Login</button>
+					</Link>
 				)}
 			</div>
 		</div>

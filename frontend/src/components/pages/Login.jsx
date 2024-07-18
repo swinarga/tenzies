@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import "./Login.css";
 import { AuthData } from "../../auth/AuthWrapper";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const Login = () => {
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
+	const [error, setError] = useState("");
 	const { login } = AuthData();
 	const navigate = useNavigate();
 
@@ -16,18 +17,25 @@ const Login = () => {
 		if (isLoggedIn) {
 			navigate("/");
 		} else {
-			console.error("not logged in");
+			setError("Server failed to login, please try again later");
 		}
 	};
 
 	return (
-		<div className="container mt-5">
+		<div
+			className={
+				"login-container d-flex flex-column justify-content-center"
+			}
+		>
 			<div className="row justify-content-md-center">
-				<div className="col-md-4">
+				<div className="login-form col-md-4">
 					<h2 className="text-center" style={{ color: "white" }}>
 						Login
 					</h2>
 					<form onSubmit={handleSubmit}>
+						{error && (
+							<div className="alert alert-danger">{error}</div>
+						)}
 						<div className="mb-3">
 							<label
 								htmlFor="username"
@@ -67,6 +75,17 @@ const Login = () => {
 							Login
 						</button>
 					</form>
+					<p className="text-center mt-3" style={{ color: "white" }}>
+						Don't have an account?{" "}
+						<Link
+							to="/register"
+							style={{
+								textDecoration: "none",
+							}}
+						>
+							<span className="text-primary">Register here</span>
+						</Link>
+					</p>
 				</div>
 			</div>
 		</div>

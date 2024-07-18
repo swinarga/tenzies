@@ -42,17 +42,19 @@ const Register = () => {
 				return;
 			}
 
-			const loginRes = login(username, password);
-
-			if (loginRes.status !== 200) {
-				alert("Server failed to login, please try again later");
-				navigate("/login");
-				return;
+			const isLoggedIn = await login(username, password);
+			if (isLoggedIn) {
+				navigate("/");
+				location.reload();
+			} else {
+				setError("Server failed to login, please try again later");
 			}
 
 			navigate("/");
 		} catch (err) {
-			console.error(err);
+			if (err.response.data) {
+				setError(err.response.data.message);
+			} else console.error(err);
 		}
 	};
 

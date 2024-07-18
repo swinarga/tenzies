@@ -1,0 +1,41 @@
+{
+	"name": "tenzies-backend",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"build": "npx tsc -p .",
+		"start": "npm run build && node dist/index.js",
+		"dev": "NODE_ENV=dev nodemon -L src/index.ts",
+		"format": "prettier --write ./src",
+		"lint": "eslint --fix ./src"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"@fastify/cookie": "^9.3.1",
+		"@fastify/cors": "^9.0.1",
+		"@fastify/jwt": "^8.0.1",
+		"axios": "^1.7.2",
+		"bcrypt": "^5.1.1",
+		"cors": "^2.8.5",
+		"dotenv": "^16.4.5",
+		"fastify": "^4.28.1",
+		"moment": "^2.30.1",
+		"mongoose": "^8.5.0"
+	},
+	"devDependencies": {
+		"@types/bcrypt": "^5.0.2",
+		"@types/cors": "^2.8.17",
+		"@typescript-eslint/eslint-plugin": "^7.16.0",
+		"@typescript-eslint/parser": "^7.16.0",
+		"eslint": "^8.57.0",
+		"eslint-config-prettier": "^9.1.0",
+		"eslint-plugin-prettier": "^5.1.3",
+		"nodemon": "^3.1.4",
+		"prettier": "^3.3.2",
+		"ts-node": "^10.9.2",
+		"typescript": "^5.5.3"
+	}
+}

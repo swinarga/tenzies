@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import { nanoid } from "nanoid";
 import Confetti from "react-confetti";
-import Die from "./Die";
-import Stats from "./Stats";
+import Die from "../Die";
+import Stats from "../Stats";
+import { AuthData } from "../../auth/AuthWrapper";
+import Header from "../Header";
+import axios from "axios";
 
-export default function App() {
-	// localStorage.removeItem("records")
+export default function Home() {
 	const [dice, setDice] = useState(allNewDice());
 	const [tenzies, setTenzies] = useState(false);
 	const [rollCount, setRollCount] = useState(0);
@@ -14,11 +16,66 @@ export default function App() {
 	const [records, setRecords] = useState(
 		JSON.parse(localStorage.getItem("records")) || []
 	);
+	const { user, logout, checkAuth } = AuthData();
+
+	function formatGameRecords(records) {
+		return records.map((record) => {
+			return {
+				id: record._id,
+				seconds: Math.floor(record.time),
+				milliseconds: (
+					(record.time - Math.floor(record.time)) *
+					100
+				).toFixed(),
+				rollCount: record.rolls,
+				datePlayed: record.datePlayed,
+			};
+		});
+	}
+
+	// Fetch records from the appropriate source based on authentication status
+	useEffect(() => {
+		async function fetchRecords() {
+			if (user) {
+				// Fetch records from the API if user is logged in
+				try {
+					const res = await axios.get(
+						import.meta.env.VITE_BACKEND_URL +
+							"/api/profiles/" +
+							user.profileId,
+						{
+							withCredentials: true,
+						}
+					);
+					console.log(res.data.games);
+					setRecords(formatGameRecords(res.data.games));
+				} catch (err) {
+					console.error(err);
+				}
+			} else {
+				// Fetch records from localStorage if user is not logged in
+				const localRecords = JSON.parse(
+					localStorage.getItem("records")
+				);
+				setRecords(localRecords || []);
+			}
+		}
+		fetchRecords();
+	}, [user]);
+
+	// check if user is logged in
+	useEffect(() => {
+		async function checkAuthWrapper() {
+			await checkAuth();
+		}
+		checkAuthWrapper();
+	}, []);
 
 	// Seconds calculation
 	const seconds = Math.floor((time / 1000) % 60);
 
-	// // Milliseconds calculation
+	// Milliseconds calculation
+	// the number of milliseconds in the range 0-99
 	const milliseconds = (time / 10) % 100;
 
 	useEffect(() => {
@@ -44,22 +101,77 @@ export default function App() {
 		};
 	}, [isTrackingTime]);
 
-	// store record to browser's local storage
+	// Store record to the appropriate storage when the game ends
 	useEffect(() => {
 		if (tenzies) {
-			setRecords((prevRecords) => {
-				const newRecords = [
-					{
-						id: nanoid(),
-						seconds,
-						milliseconds,
-						rollCount,
-					},
-					...prevRecords,
-				];
-				localStorage.setItem("records", JSON.stringify(newRecords));
-				return newRecords;
-			});
+			const newRecord = {
+				id: nanoid(),
+				seconds,
+				milliseconds,
+				// if we use time, there would be a discrepancy
+				// between the time displayed and the time stored
+				time: seconds + milliseconds / 100, // in seconds
+				rollCount,
+				datePlayed: Date.now(),
+			};
+
+			if (user) {
+				// Save record to the server if user is logged in
+				const saveRecord = async () => {
+					try {
+						await axios.post(
+							import.meta.env.VITE_BACKEND_URL +
+								"/api/profiles/" +
+								user.profileId +
+								"/games/",
+							{
+								rolls: newRecord.rollCount,
+								time: newRecord.time,
+								datePlayed: newRecord.datePlayed,
+							},
+							{ withCredentials: true }
+						);
+
+						// just for the preview
+						setRecords((prevRecords) => {
+							const newRecords = [newRecord, ...prevRecords];
+							return newRecords;
+						});
+					} catch (err) {
+						console.error(err);
+
+						// store to local storage if the server fails
+						setRecords((prevRecords) => {
+							// mark the record as unsynced
+							const markedNewRecord = {
+								...newRecord,
+								unsynced: true,
+								profileId: user.profileId,
+							};
+							const newRecords = [
+								markedNewRecord,
+								...prevRecords,
+							];
+							localStorage.setItem(
+								"records",
+								JSON.stringify(newRecords)
+							);
+							return newRecords;
+						});
+
+						// TODO:
+						// 1. show a message to the user that the record is not synced
+						// 2. retry syncing the record
+					}
+				};
+				saveRecord();
+			} else {
+				setRecords((prevRecords) => {
+					const newRecords = [newRecord, ...prevRecords];
+					localStorage.setItem("records", JSON.stringify(newRecords));
+					return newRecords;
+				});
+			}
 		}
 	}, [tenzies]);
 
@@ -134,6 +246,21 @@ export default function App() {
 		<>
 			{tenzies && <Confetti width={window.innerwidth} />}
 			<div className="d-flex flex-column" style={{ height: "100vh" }}>
+				<Header user={user} />
+				{user && (
+					<div className="mt-5">
+						<h2
+							style={{
+								margin: 0,
+								color: "white",
+								textAlign: "center",
+							}}
+						>
+							Welcome back {user.username}!
+						</h2>
+					</div>
+				)}
+
 				<div
 					className="container d-flex justify-content-center align-items-center"
 					style={{ flex: 1 }}
@@ -186,7 +313,7 @@ export default function App() {
 				<div
 					className="footer text-center p-3"
 					style={{
-						backgroundColor: `rgba(0, 0, 0, 0.2)`,
+						backgroundColor: `#172b46`,
 						color: "white",
 					}}
 				>

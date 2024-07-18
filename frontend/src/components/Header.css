@@ -1,0 +1,48 @@
+.outpost-header {
+	/* Rectangle 9 */
+
+	/* position: absolute; */
+	/* width: 1440px;
+	height: 69px; */
+	/* left: 0px; */
+	/* top: -5px; */
+
+	background: #172b46;
+	/* height: 80px; */
+	/* border-bottom: solid 1px #222328; */
+}
+
+.outpost-logo {
+	width: 64px;
+	height: auto;
+	color: white;
+}
+
+.outpost-logo-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background: #172b46;
+	width: 80px;
+	height: 80px;
+	/* border: white solid 1px; */
+}
+
+.search-container {
+	background: #172b46;
+	height: 80px;
+	border: white solid 1px;
+	color: white;
+	/* display: flex; */
+	/* align-items: center; */
+}
+
+.search-container::placeholder {
+	color: #77787c;
+	/* padding-left: 20px; */
+}
+
+.avatar {
+	width: 32px;
+	height: auto;
+}

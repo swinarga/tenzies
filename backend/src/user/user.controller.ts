@@ -29,6 +29,7 @@ class UserController {
 			path: "/",
 			httpOnly: true,
 			secure: true,
+			domain: process.env.COOKIE_DOMAIN,
 		});
 
 		return reply.status(200).send({

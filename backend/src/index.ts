@@ -11,7 +11,9 @@ import MongoDBProfileDataSource from "./database/MongoDBProfileDataSource";
 import ProfileController from "./profile/profile.controller";
 import ProfileRouter from "./profile/profile.routes";
 
-dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
+dotenv.config({
+	path: process.env.NODE_ENV ? `.env.${process.env.NODE_ENV}` : ".env",
+});
 
 const dbUri = process.env.DB_URI as string;
 if (!dbUri) {
@@ -92,7 +94,12 @@ async function getMongoDS() {
 		});
 
 		try {
-			fastify.listen({ port: 3000 }).then((address) => {});
+			fastify
+				.listen({
+					host: (process.env.HOST as string) || "0.0.0.0",
+					port: parseInt(process.env.PORT as string) || 3000,
+				})
+				.then((address) => {});
 		} catch (err) {
 			fastify.log.error(err);
 			process.exit(1);

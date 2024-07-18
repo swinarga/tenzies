@@ -5,7 +5,7 @@
 	"main": "index.js",
 	"scripts": {
 		"build": "npx tsc -p .",
-		"start": "npm run build && node dist/index.js",
+		"start": "node dist/index.js",
 		"dev": "NODE_ENV=dev nodemon -L src/index.ts",
 		"format": "prettier --write ./src",
 		"lint": "eslint --fix ./src"

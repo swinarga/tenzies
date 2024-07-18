@@ -4,4 +4,4 @@ in their [React series](https://www.youtube.com/watch?v=bMknfKXIFA8) with extend
 - tracks time to finish the game
 - tracks how many rolls it took to finish the game
 
-[Live Demo](https://tenzies-swinarga.web.app/)
+[Live Demo](https://tenzies-3436.onrender.com)

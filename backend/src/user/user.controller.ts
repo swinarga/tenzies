@@ -30,6 +30,7 @@ class UserController {
 			httpOnly: true,
 			secure: true,
 			domain: process.env.COOKIE_DOMAIN,
+			sameSite: "none",
 		});
 
 		return reply.status(200).send({
